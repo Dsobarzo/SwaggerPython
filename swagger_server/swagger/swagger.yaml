@@ -1,0 +1,388 @@
+openapi: 3.0.1
+info:
+  title: Api Laboratorios de Simulacion (UMAG).
+  description: "API programada en java spring boot V3.1.1 para manejar la informacion\
+    \ de los laboratorios de simulacion en la facultad de Ciencias de la salud (Universidad\
+    \ de Magallanes), con una base de datos postgresSQL en una instancia RDS-AWS y\
+    \ un backend SandBox railway (hambiente de desarrollo)."
+  version: 1.0.0
+servers:
+- url: https://apilab-backend-sandbox.up.railway.app/
+tags:
+- name: Profesores
+  description: "Este endpoint se encarga de listar, obtener, borrar y modificar (/obtenerprofesores\
+    \ - /guardarprofesor - /modificarprofesor/{id} - /borrarprofesor/{id})."
+- name: Carreras
+  description: "Este endpoint se encarga de listar, obtener, borrar y modificar (/obtenercarreas\
+    \ - /guardarcarrera - /modificarcarrera/{id} - /borrarcarrera/{id})."
+paths:
+  /obtenerprofesores:
+    get:
+      tags:
+      - Profesores
+      summary: Consulta a la base de datos todos los profesores existentes en ella.
+      description: Peticion del cliente a la api para obtener todos los clientes en
+        la base de datos.
+      operationId: listas_profesores_
+      responses:
+        "200":
+          description: (OK) La informacion se entrego correctamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExitoProfesorGet'
+        "400":
+          description: "(BadRequest) Los datos enviados son incorrectos o hay datos\
+            \ obligatorios no enviados. La solicitud no fue válida. Este código se\
+            \ devuelve cuando el servidor ha intentado procesar la solicitud, pero\
+            \ algún aspecto de la solicitud no es válido; por ejemplo, un recurso\
+            \ formateado de forma incorrecta o un intento de despliegue de un proyecto\
+            \ de sucesos no válido en el tiempo de ejecución de sucesos. La informació\
+            n acerca de la solicitud se proporciona en el cuerpo de la respuesta e\
+            \ incluye un código de error y un mensaje de error."
+        "403":
+          description: "(Forbidden)Indica que el cliente ha intentado acceder a un\
+            \ recurso al que no tiene acceso. Podría producirse si el usuario que\
+            \ accede al recurso remoto no tiene privilegios suficientes; por ejemplo,\
+            \ con el rol WBERestApiUsers o WBERestApiPrivilegedUsers. Los usuarios\
+            \ que intenten acceder a proyectos de sucesos privados que son propiedad\
+            \ de otros podrían recibir también este error, pero solo si tienen el\
+            \ rol WBERestApiUsers en lugar de WBERestApiPrivilegedUsers."
+        "404":
+          description: (NotFound) No se encontro la informacion. Indica que el recurso
+            de destino no existe. Esto podría deberse a que el URI no está bien formado
+            o a que se ha suprimido el recurso.
+        "500":
+          description: (ServerError) Error en el servidor. Se ha producido un error
+            interno en el servidor. Esto podría indicar un problema con la solicitud
+            o un problema en el código del lado del servidor. Se puede encontrar información
+            acerca del error en el cuerpo de respuesta.
+      x-openapi-router-controller: swagger_server.controllers.profesores_controller
+  /guardarprofesor:
+    post:
+      tags:
+      - Profesores
+      summary: Agrega un Profesor a la base de datos.
+      description: "Peticion de tipo POST al EndPoint, para agregar un profesor a\
+        \ la base de Datos."
+      operationId: guardar_profesor_
+      requestBody:
+        description: Agregar Profesor.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BodyProfesorPost'
+        required: true
+      responses:
+        "200":
+          description: (OK) La informacion se entrego correctamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BodyProfesorPost'
+        "400":
+          description: "(BadRequest) Los datos enviados son incorrectos o hay datos\
+            \ obligatorios no enviados. La solicitud no fue válida. Este código se\
+            \ devuelve cuando el servidor ha intentado procesar la solicitud, pero\
+            \ algún aspecto de la solicitud no es válido; por ejemplo, un recurso\
+            \ formateado de forma incorrecta o un intento de despliegue de un proyecto\
+            \ de sucesos no válido en el tiempo de ejecución de sucesos. La informació\
+            n acerca de la solicitud se proporciona en el cuerpo de la respuesta e\
+            \ incluye un código de error y un mensaje de error."
+        "403":
+          description: "(Forbidden)Indica que el cliente ha intentado acceder a un\
+            \ recurso al que no tiene acceso. Podría producirse si el usuario que\
+            \ accede al recurso remoto no tiene privilegios suficientes; por ejemplo,\
+            \ con el rol WBERestApiUsers o WBERestApiPrivilegedUsers. Los usuarios\
+            \ que intenten acceder a proyectos de sucesos privados que son propiedad\
+            \ de otros podrían recibir también este error, pero solo si tienen el\
+            \ rol WBERestApiUsers en lugar de WBERestApiPrivilegedUsers."
+        "404":
+          description: (NotFound) No se encontro la informacion. Indica que el recurso
+            de destino no existe. Esto podría deberse a que el URI no está bien formado
+            o a que se ha suprimido el recurso.
+        "405":
+          description: (Entrada Invalida)
+        "500":
+          description: (ServerError) Error en el servidor. Se ha producido un error
+            interno en el servidor. Esto podría indicar un problema con la solicitud
+            o un problema en el código del lado del servidor. Se puede encontrar información
+            acerca del error en el cuerpo de respuesta.
+      x-openapi-router-controller: swagger_server.controllers.profesores_controller
+  /modificarprofesor/{id}:
+    put:
+      tags:
+      - Profesores
+      summary: Modificar un profesor existente
+      operationId: modificarprofesor_id_put
+      parameters:
+      - name: id
+        in: path
+        description: ID del profesor a modificar
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: number
+      requestBody:
+        description: Agregar Profesor.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BodyProfesorPost'
+        required: true
+      responses:
+        "200":
+          description: (OK) La informacion se entrego correctamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExitoProfesorModificar'
+        "400":
+          description: "(BadRequest) Los datos enviados son incorrectos o hay datos\
+            \ obligatorios no enviados. La solicitud no fue válida. Este código se\
+            \ devuelve cuando el servidor ha intentado procesar la solicitud, pero\
+            \ algún aspecto de la solicitud no es válido; por ejemplo, un recurso\
+            \ formateado de forma incorrecta o un intento de despliegue de un proyecto\
+            \ de sucesos no válido en el tiempo de ejecución de sucesos. La informació\
+            n acerca de la solicitud se proporciona en el cuerpo de la respuesta e\
+            \ incluye un código de error y un mensaje de error."
+        "403":
+          description: "(Forbidden)Indica que el cliente ha intentado acceder a un\
+            \ recurso al que no tiene acceso. Podría producirse si el usuario que\
+            \ accede al recurso remoto no tiene privilegios suficientes; por ejemplo,\
+            \ con el rol WBERestApiUsers o WBERestApiPrivilegedUsers. Los usuarios\
+            \ que intenten acceder a proyectos de sucesos privados que son propiedad\
+            \ de otros podrían recibir también este error, pero solo si tienen el\
+            \ rol WBERestApiUsers en lugar de WBERestApiPrivilegedUsers."
+        "404":
+          description: (NotFound) No se encontro la informacion. Indica que el recurso
+            de destino no existe. Esto podría deberse a que el URI no está bien formado
+            o a que se ha suprimido el recurso.
+        "405":
+          description: (Entrada Invalida)
+        "500":
+          description: (ServerError) Error en el servidor. Se ha producido un error
+            interno en el servidor. Esto podría indicar un problema con la solicitud
+            o un problema en el código del lado del servidor. Se puede encontrar información
+            acerca del error en el cuerpo de respuesta.
+      x-openapi-router-controller: swagger_server.controllers.profesores_controller
+  /borrarprofesor/{id}:
+    delete:
+      tags:
+      - Profesores
+      summary: Elimina un profesor existente
+      operationId: borrarprofesor_id_delete
+      parameters:
+      - name: id
+        in: path
+        description: ID del profesor a eliminar
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: number
+      responses:
+        "200":
+          description: (OK) La informacion se entrego correctamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExitoProfesorModificar'
+        "400":
+          description: "(BadRequest) Los datos enviados son incorrectos o hay datos\
+            \ obligatorios no enviados. La solicitud no fue válida. Este código se\
+            \ devuelve cuando el servidor ha intentado procesar la solicitud, pero\
+            \ algún aspecto de la solicitud no es válido; por ejemplo, un recurso\
+            \ formateado de forma incorrecta o un intento de despliegue de un proyecto\
+            \ de sucesos no válido en el tiempo de ejecución de sucesos. La informació\
+            n acerca de la solicitud se proporciona en el cuerpo de la respuesta e\
+            \ incluye un código de error y un mensaje de error."
+        "403":
+          description: "(Forbidden)Indica que el cliente ha intentado acceder a un\
+            \ recurso al que no tiene acceso. Podría producirse si el usuario que\
+            \ accede al recurso remoto no tiene privilegios suficientes; por ejemplo,\
+            \ con el rol WBERestApiUsers o WBERestApiPrivilegedUsers. Los usuarios\
+            \ que intenten acceder a proyectos de sucesos privados que son propiedad\
+            \ de otros podrían recibir también este error, pero solo si tienen el\
+            \ rol WBERestApiUsers en lugar de WBERestApiPrivilegedUsers."
+        "404":
+          description: (NotFound) No se encontro la informacion. Indica que el recurso
+            de destino no existe. Esto podría deberse a que el URI no está bien formado
+            o a que se ha suprimido el recurso.
+        "405":
+          description: (Entrada Invalida)
+        "500":
+          description: (ServerError) Error en el servidor. Se ha producido un error
+            interno en el servidor. Esto podría indicar un problema con la solicitud
+            o un problema en el código del lado del servidor. Se puede encontrar información
+            acerca del error en el cuerpo de respuesta.
+      x-openapi-router-controller: swagger_server.controllers.profesores_controller
+  /obtenercarreras:
+    get:
+      tags:
+      - Carreras
+      summary: Consulta a la base de datos todas las Carreras existentes en ella.
+      description: Peticion del cliente a la api para obtener todas las Carreras en
+        la base de datos.
+      operationId: listas_carreras_
+      responses:
+        "200":
+          description: (OK) La informacion se entrego correctamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExitoCarreraGet'
+        "400":
+          description: "(BadRequest) Los datos enviados son incorrectos o hay datos\
+            \ obligatorios no enviados. La solicitud no fue válida. Este código se\
+            \ devuelve cuando el servidor ha intentado procesar la solicitud, pero\
+            \ algún aspecto de la solicitud no es válido; por ejemplo, un recurso\
+            \ formateado de forma incorrecta o un intento de despliegue de un proyecto\
+            \ de sucesos no válido en el tiempo de ejecución de sucesos. La informació\
+            n acerca de la solicitud se proporciona en el cuerpo de la respuesta e\
+            \ incluye un código de error y un mensaje de error."
+        "403":
+          description: "(Forbidden)Indica que el cliente ha intentado acceder a un\
+            \ recurso al que no tiene acceso. Podría producirse si el usuario que\
+            \ accede al recurso remoto no tiene privilegios suficientes; por ejemplo,\
+            \ con el rol WBERestApiUsers o WBERestApiPrivilegedUsers. Los usuarios\
+            \ que intenten acceder a proyectos de sucesos privados que son propiedad\
+            \ de otros podrían recibir también este error, pero solo si tienen el\
+            \ rol WBERestApiUsers en lugar de WBERestApiPrivilegedUsers."
+        "404":
+          description: (NotFound) No se encontro la informacion. Indica que el recurso
+            de destino no existe. Esto podría deberse a que el URI no está bien formado
+            o a que se ha suprimido el recurso.
+        "500":
+          description: (ServerError) Error en el servidor. Se ha producido un error
+            interno en el servidor. Esto podría indicar un problema con la solicitud
+            o un problema en el código del lado del servidor. Se puede encontrar información
+            acerca del error en el cuerpo de respuesta.
+      x-openapi-router-controller: swagger_server.controllers.carreras_controller
+components:
+  schemas:
+    BodyProfesorPost:
+      type: object
+      properties:
+        nombre:
+          type: string
+          description: Primer nombre del profesor.
+        apellido:
+          type: string
+          description: Primer apellido del profesor.
+        email:
+          type: string
+          description: E-Mail del Profesor.
+        id_carrera:
+          type: integer
+          description: "Id de la tabla carreras, relacion con carrera en donde realiza\
+            \ funciones el profesor."
+      example:
+        apellido: apellido
+        id_carrera: 0
+        nombre: nombre
+        email: email
+    ExitoProfesorGet:
+      type: object
+      properties:
+        id_profesor:
+          type: integer
+          description: "ID  que le corresponde al profesor, auto-icrementado"
+          readOnly: true
+          enum:
+          - 1
+        nombre:
+          type: string
+          description: Primer nombre del profesor
+          enum:
+          - nombre
+        apellido:
+          type: string
+          description: Primer apellido del profesor
+          enum:
+          - apellido
+        email:
+          type: string
+          description: E-Mail del Profesor
+          enum:
+          - email
+        id_carrera:
+          type: integer
+          description: "Id de la tabla carreras, relacion con carrera en donde realiza\
+            \ funciones el profesor."
+          enum:
+          - 1
+      example:
+        apellido: apellido
+        id_carrera: 6
+        id_profesor: 0
+        nombre: nombre
+        email: email
+    ExitoProfesorModificar:
+      type: object
+      properties:
+        nombre:
+          type: string
+          description: Nombre del Profesor
+        apellido:
+          type: string
+          description: Apellido del Profesor
+        email:
+          type: string
+          description: E-Mail del Profesor
+        id_carrera:
+          type: integer
+          description: "Id de la tabla carreras, relacion con carrera en donde realiza\
+            \ funciones el profesor."
+      example:
+        apellido: apellido
+        id_carrera: 0
+        nombre: nombre
+        email: email
+    ExitoCarreraGet:
+      type: object
+      properties:
+        id_carrera:
+          type: integer
+          description: "ID  que le corresponde a la Carrera, auto-icrementado"
+          readOnly: true
+          enum:
+          - 1
+        carrera:
+          type: string
+          description: Nombre de la carrera
+          enum:
+          - nombre
+      example:
+        id_carrera: 0
+        carrera: nombre
+  responses:
+    Notfound:
+      description: (NotFound) No se encontro la informacion. Indica que el recurso
+        de destino no existe. Esto podría deberse a que el URI no está bien formado
+        o a que se ha suprimido el recurso.
+    BadRequest:
+      description: "(BadRequest) Los datos enviados son incorrectos o hay datos obligatorios\
+        \ no enviados. La solicitud no fue válida. Este código se devuelve cuando\
+        \ el servidor ha intentado procesar la solicitud, pero algún aspecto de la\
+        \ solicitud no es válido; por ejemplo, un recurso formateado de forma incorrecta\
+        \ o un intento de despliegue de un proyecto de sucesos no válido en el tiempo\
+        \ de ejecución de sucesos. La información acerca de la solicitud se proporciona\
+        \ en el cuerpo de la respuesta e incluye un código de error y un mensaje de\
+        \ error."
+    ServerError:
+      description: (ServerError) Error en el servidor. Se ha producido un error interno
+        en el servidor. Esto podría indicar un problema con la solicitud o un problema
+        en el código del lado del servidor. Se puede encontrar información acerca
+        del error en el cuerpo de respuesta.
+    Forbidden:
+      description: "(Forbidden)Indica que el cliente ha intentado acceder a un recurso\
+        \ al que no tiene acceso. Podría producirse si el usuario que accede al recurso\
+        \ remoto no tiene privilegios suficientes; por ejemplo, con el rol WBERestApiUsers\
+        \ o WBERestApiPrivilegedUsers. Los usuarios que intenten acceder a proyectos\
+        \ de sucesos privados que son propiedad de otros podrían recibir también este\
+        \ error, pero solo si tienen el rol WBERestApiUsers en lugar de WBERestApiPrivilegedUsers."
+    Invalid:
+      description: (Entrada Invalida)
+
